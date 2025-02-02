@@ -4201,6 +4201,104 @@ pre {
     padding: 0
 }
 
+
+/* General Card Styles */
+.room-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+  }
+  
+  /* Room Image */
+  .room-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+  
+  /* Room Info Section */
+  .room-info {
+    padding: 16px;
+    background-color: #f9f9f9;
+  }
+  
+  /* Title Styles */
+  .room-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  /* Owner Details Section */
+  .room-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .owner-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .profile-pic {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
+  }
+  
+  .owner-info span {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Price Section */
+  .room-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .room-image {
+      height: 140px;
+    }
+  
+    .room-title {
+      font-size: 0.9rem;
+    }
+  
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+    }
+  
+    .room-price {
+      font-size: 0.9rem;
+    }
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
 /* Chrome safari scrollbar */
 ::-webkit-scrollbar {
     width: 4px;

@@ -1,3 +1,60 @@
+<?php
+require_once '../app/models/UserModel.php'; // Include the UserModel class
+
+// Initialize response variables
+$message = '';
+$error = '';
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Trim and sanitize input data
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+    $confirmPassword = trim($_POST['confirmPassword']);
+    $phone = trim($_POST['phone']);
+    $gender = trim($_POST['gender']);
+    $email = trim($_POST['email']);
+    $fullname = trim($_POST['fullname']);
+    $dob = trim($_POST['dob']);
+    $nid = trim($_POST['nid']);
+    $profilePhoto = ''; // You can handle file uploads separately
+    $userType = 'user'; // Default user type
+
+    // Basic validations
+    if (empty($username) || empty($password) || empty($confirmPassword) || empty($phone) || empty($gender) || empty($email)) {
+        $error = "All fields are required.";
+    } elseif ($password !== $confirmPassword) {
+        $error = "Passwords do not match.";
+    } else {
+        // Instantiate UserModel
+        $user = new UserModel();
+
+        // Register the user
+        $registrationResult = $user->registerUser($username, $password, $phone, $gender, $email);
+
+        if ($registrationResult === "User registered successfully.") {
+            // Get the newly registered user's ID
+            $userId = $user->getUserIdByUsername($username);
+
+            if ($userId) {
+                // Add user details
+                $detailsResult = $user->addUserDetails($userId, $fullname, $dob, $nid, $profilePhoto, $userType);
+
+                if ($detailsResult === "User details added successfully.") {
+                    $message = "Registration successful! You can now log in.";
+                } else {
+                    $error = $detailsResult; // Error adding user details
+                }
+            } else {
+                $error = "Failed to retrieve user ID.";
+            }
+        } else {
+            $error = $registrationResult; // Error during registration
+        }
+    }
+}
+?>
+
 <!doctype html>
 <html lang="en" class="deeppurple-theme">
 <head>
@@ -36,7 +93,7 @@
 
             // Regular expressions
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const phonePattern = /^[0-9]{10}$/; // Assuming 10 digits for phone number
+            const phonePattern = /^[0-9]{11}$/; // Assuming 11 digits for phone number
 
             // Validation
             if (!username) {
@@ -45,7 +102,7 @@
             }
 
             if (!phone || !phonePattern.test(phone)) {
-                alert('Enter a valid 10-digit phone number.');
+                alert('Enter a valid 11-digit phone number.');
                 return;
             }
 
@@ -64,7 +121,6 @@
                 return;
             }
 
-            alert('Form submitted successfully!');
             document.querySelector('form').submit(); // Submit the form if validation passes
         }
     </script>
@@ -104,30 +160,42 @@
             <div class="col align-self-center px-3 text-center">
                 <br>
                 <img src="img/logo-login.png" alt="logo" class="logo-small">
-                <form class="form-signin mt-3" onsubmit="validateForm(event)">
+                <h2><?php echo $message; ?></h2>
+                <form class="form-signin mt-3" method="POST" onsubmit="validateForm(event)">
                     <div class="form-group">
-                        <input type="text" id="username" class="form-control form-control-lg text-center" placeholder="Username" required autofocus>
+                        <input type="text" id="username" name="username" class="form-control form-control-lg text-center" placeholder="Username" required autofocus>
                     </div>
                     <div class="form-group">
-                        <input type="number" id="phone" class="form-control form-control-lg text-center" placeholder="Phone Number" required>
+                        <input type="number" id="phone" name="phone" class="form-control form-control-lg text-center" placeholder="Phone Number" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="inputEmail" class="form-control form-control-lg text-center" placeholder="Email" required>
+                        <input type="email" id="inputEmail" name="email" class="form-control form-control-lg text-center" placeholder="Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="inputPassword" class="form-control form-control-lg text-center" placeholder="Password" required>
+                        <input type="password" id="inputPassword" name="password" class="form-control form-control-lg text-center" placeholder="Password" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="confirmPassword" class="form-control form-control-lg text-center" placeholder="Confirm Password" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-lg text-center" placeholder="Confirm Password" required>
                     </div>
-
+                    <div class="form-group">
+                        <input type="text" id="gender" name="gender" class="form-control form-control-lg text-center" placeholder="Gender" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="fullname" name="fullname" class="form-control form-control-lg text-center" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" id="dob" name="dob" class="form-control form-control-lg text-center" placeholder="Date of Birth" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="nid" name="nid" class="form-control form-control-lg text-center" placeholder="National ID" required>
+                    </div>
                     <p class="mt-4 d-block text-secondary">
-                        By clicking register you are agreeing to the
+                        By clicking register, you are agreeing to the
                         <a href="javascript:void(0)">Terms and Conditions.</a>
                     </p>
-
-                    <button type="submit" class="btn btn-default btn-lg btn-rounded shadow btn-block">Next</button>
+                    <button type="submit" class="btn btn-default btn-lg btn-rounded shadow btn-block">Sign Up</button>
                 </form>
+                <a href="login" class="mt-4 d-block">Already Have an Account?</a>
             </div>
         </div>
     </div>

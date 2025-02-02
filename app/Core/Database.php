@@ -5,7 +5,7 @@ class Database
     private $servername = "localhost";
     private $username = "root";
     private $password = "";
-    private $dbname = "bacholor-hub";
+    private $dbname = "bachelor-hub";
     private $conn;
 
     // Constructor to initialize the database connection

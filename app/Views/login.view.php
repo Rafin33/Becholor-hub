@@ -1,10 +1,29 @@
-<h1>Login</h1>
+<?php
+session_start(); // Start the session
 
+require_once '../app/models/UserModel.php';
+
+// Process login form
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = htmlspecialchars($_POST["username"]);
+    $password = htmlspecialchars($_POST["password"]);
+
+    $user = new UserModel();
+    $result = $user->signInUser($username, $password);
+
+    // Handle response
+    if ($result['status'] === 'success') {
+        $_SESSION['user_id'] = $result['user_id']; // Store user ID in session
+        session_regenerate_id(true); // Regenerate session ID for security
+        header("Location: home"); // Redirect on success
+        exit();
+    } else {
+        $error_message = $result['message'];
+    }
+}
+?>
 <!doctype html>
 <html lang="en" class="deeppurple-theme">
-
-
-<!-- Mirrored from maxartkiller.com/website/Bachelor Hub/Bachelor Hub-HTML/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Apr 2021 06:30:25 GMT -->
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover, user-scalable=no">
@@ -28,7 +47,6 @@
     <!-- Custom styles for this template -->
     <link href="css/style.css" rel="stylesheet">
 </head>
-
 <body>
     <!-- Loader -->
     <div class="row no-gutters vh-100 loader-screen">
@@ -64,97 +82,28 @@
             <div class="col align-self-center px-3 text-center">
                 <br>
                 <img src="img/logo-login.png" alt="logo" class="logo-small">
-                <form class="form-signin mt-3 ">
+                <form method="POST" class="form-signin mt-3">
                     <div class="form-group">
-                        <input type="email" id="inputEmail" class="form-control form-control-lg text-center" placeholder="Username" required autofocus>
+                        <input type="text" name="username" id="inputEmail" class="form-control form-control-lg text-center" placeholder="Username" required autofocus>
                     </div>
 
                     <div class="form-group">
-                        <input type="password" id="inputPassword" class="form-control form-control-lg text-center" placeholder="Password" required>
+                        <input type="password" name="password" id="inputPassword" class="form-control form-control-lg text-center" placeholder="Password" required>
                     </div>
 
-                    <!--<div class="form-group my-4 text-left">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="rememberme">
-                            <label class="custom-control-label" for="rememberme">Remember Me</label>
-                        </div>
-                    </div>-->
-                    
-                    <a href="signup" class="mt-4 d-block">Create An Account</a>
-                    
-                </form>               
-            </div>
-        </div>
+                    <button type="submit" class="btn btn-default btn-lg btn-rounded shadow btn-block">Login</button>
+                </form>
 
-        <!-- login buttons -->
-        <div class="row mx-0 bottom-button-container">
-            <div class="col">
-                <a href="home" class="btn btn-default btn-lg btn-rounded shadow btn-block">Login</a>
-            </div>
-        </div>
-        <!-- login buttons -->
-    </div>
+                <?php if (isset($error_message)): ?>
+                    <div class="alert alert-danger mt-3 text-center">
+                        <?php echo htmlspecialchars($error_message); ?>
+                    </div>
+                <?php endif; ?>
 
-
-    <!-- color chooser menu start -->
-    <div class="modal fade " id="colorscheme" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content ">
-                <div class="modal-header theme-header border-0">
-                    <h6 class="">Color Picker</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body pt-0">
-                    <div class="text-center theme-color">
-                        <button class="m-1 btn red-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="red-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn blue-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="blue-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn yellow-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="yellow-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn green-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="green-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn pink-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="pink-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn orange-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="orange-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn purple-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="purple-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn deeppurple-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="deeppurple-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn lightblue-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="lightblue-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn teal-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="teal-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn lime-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="lime-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn deeporange-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="deeporange-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn gray-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="gray-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                        <button class="m-1 btn black-theme-bg text-white btn-rounded-54 shadow-sm" data-theme="black-theme"><i class="material-icons w-50">color_lens_outline</i></button>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="col-6 text-left">
-                        <div class="row">
-                            <div class="col-auto text-right align-self-center"><i class="material-icons text-warning vm">wb_sunny</i></div>
-                            <div class="col-auto text-center align-self-center px-0">
-                                <div class="custom-control custom-switch float-right">
-                                    <input type="checkbox" name="themelayout" class="custom-control-input" id="theme-dark">
-                                    <label class="custom-control-label" for="theme-dark"></label>
-                                </div>
-                            </div>
-                            <div class="col-auto text-left align-self-center"><i class="material-icons text-dark vm">brightness_2</i></div>
-                        </div>
-                    </div>
-                    <div class="col-6 text-right">
-                        <div class="row">
-                            <div class="col-auto text-right align-self-center">LTR</div>
-                            <div class="col-auto text-center align-self-center px-0">
-                                <div class="custom-control custom-switch float-right">
-                                    <input type="checkbox" name="rtllayout" class="custom-control-input" id="theme-rtl">
-                                    <label class="custom-control-label" for="theme-rtl"></label>
-                                </div>
-                            </div>
-                            <div class="col-auto text-left align-self-center">RTL</div>
-                        </div>
-                    </div>
-                </div>
+                <a href="signup" class="mt-4 d-block">Create An Account</a>
             </div>
         </div>
     </div>
-    <!-- color chooser menu ends -->
-
 
     <!-- jquery, popper and bootstrap js -->
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -169,9 +118,5 @@
 
     <!-- template custom js -->
     <script src="js/main.js"></script>
-
 </body>
-
-
-<!-- Mirrored from maxartkiller.com/website/Bachelor Hub/Bachelor Hub-HTML/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Apr 2021 06:30:28 GMT -->
 </html>

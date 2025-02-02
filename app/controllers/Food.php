@@ -1,6 +1,6 @@
 <?php
 
-class Home extends Controller {
+class Food extends Controller {
     public function index() {
 
         // Check if the user is logged in by verifying the session
@@ -10,11 +10,11 @@ class Home extends Controller {
             exit();
         }
 
-        // If the user is logged in, load the home view
-        $this->view('home');
+        // If the user is logged in, load the food view
+        $this->view('food');
     }
 }
 
-// Instantiate the Home controller and call the index method
-$home = new Home;
-$home->index();
+// Instantiate the food controller and call the index method
+$food = new Food;
+$food->index();
