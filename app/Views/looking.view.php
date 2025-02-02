@@ -85,11 +85,12 @@ if (isset($_GET["view"])) {
     <?php endif; ?>
 
     <!-- Post Creation Form -->
-    <form action="" method="POST">
+
+    <form action="" method="POST" onsubmit="return validateForm()">
         <input type="hidden" name="action" value="create">
         <div class="form-group">
             <label for="description">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>
 
         <div class="form-group">
@@ -104,10 +105,9 @@ if (isset($_GET["view"])) {
 
         <button type="submit" class="btn btn-primary btn-block">Submit Post</button>
     </form>
-
     <hr class="mt-5">
 
-    <h2 class="text-center mb-4">All Looking For Posts</h2>
+    <h2 class="text-center mb-4">All Looking For Posts</h2> <a  class="btn btn-information" href="?view"> Show my own post</a>
 
     <!-- Display all posts -->
     <div class="row">
@@ -160,5 +160,33 @@ if (isset($_GET["view"])) {
         <?php endif; ?>
     </div>
 </div>
+<script>
+function validateForm() {
+    // Get form inputs
+    var description = document.getElementById('description').value.trim();
+    var budget = document.getElementById('budget').value.trim();
+    var location = document.getElementById('location').value.trim();
 
+    // Check if description is empty
+    if (description === "") {
+        alert("Please enter a description.");
+        return false;
+    }
+
+    // Check if budget is empty or not a valid number
+    if (budget === "" || isNaN(budget) || parseFloat(budget) <= 0) {
+        alert("Please enter a valid budget.");
+        return false;
+    }
+
+    // Check if location is empty
+    if (location === "") {
+        alert("Please enter a location.");
+        return false;
+    }
+
+    // If all validations pass, return true to submit the form
+    return true;
+}
+</script>
 <?php include('assets/footer.php'); ?>

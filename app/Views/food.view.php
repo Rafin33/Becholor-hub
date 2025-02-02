@@ -113,7 +113,7 @@ $foodPosts = $foodModel->getAllFood();
 
     <hr class="mt-5">
 
-    <h2 class="text-center mb-4">All Food Posts</h2>
+    <h2 class="text-center mb-4">All Food Posts</h2><a  class="btn btn-information" href="?view"> Show my own post</a>
 
     <div class="row">
         <?php if (count($foodPosts) > 0): ?>
@@ -124,20 +124,21 @@ $foodPosts = $foodModel->getAllFood();
                         <div class="card-body">
                             <h5 class="card-title">Food Details</h5>
                             <p class="card-text"><?php echo nl2br(htmlspecialchars($food['details'])); ?></p>
-                            
+                            <?php if ($_SESSION['user_id'] == $food['user_id']&&isset($_GET['view'])) : ?>                            
                             <button class="btn btn-info edit-btn" 
                                     data-id="<?php echo $food['id']; ?>" 
                                     data-details="<?php echo htmlspecialchars($food['details']); ?>" 
                                     data-photo="<?php echo htmlspecialchars($food['photo']); ?>">
                                 Edit
                             </button>
-
+                            
                             <form action="" method="POST" class="d-inline">
                                 <input type="hidden" name="delete_id" value="<?php echo $food['id']; ?>">
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">
                                     Delete
                                 </button>
                             </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -149,14 +150,41 @@ $foodPosts = $foodModel->getAllFood();
 </div>
 
 <script>
-document.querySelectorAll(".edit-btn").forEach(button => {
-    button.addEventListener("click", function() {
-        document.getElementById("food_id").value = this.dataset.id;
-        document.getElementById("details").value = this.dataset.details;
-        document.getElementById("action").value = "edit";
-        document.getElementById("submitBtn").textContent = "Update Post";
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("form").addEventListener("submit", function (event) {
+        let details = document.getElementById("details").value.trim();
+        let photo = document.getElementById("photo");
+        let action = document.getElementById("action").value;
+        let errorMessages = [];
+
+        // Validate food details length (at least 10 characters)
+        if (details.length < 10) {
+            errorMessages.push("Food details must be at least 10 characters long.");
+        }
+
+        // Validate photo upload only for new posts
+        if (action === "add" && photo.files.length === 0) {
+            errorMessages.push("Please upload a food photo.");
+        }
+
+        // Show error messages if any
+        if (errorMessages.length > 0) {
+            alert(errorMessages.join("\n"));
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+
+    // Edit button event listener
+    document.querySelectorAll(".edit-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            document.getElementById("food_id").value = this.dataset.id;
+            document.getElementById("details").value = this.dataset.details;
+            document.getElementById("action").value = "edit";
+            document.getElementById("submitBtn").textContent = "Update Post";
+        });
     });
 });
+
 </script>
 
 <?php include('assets/footer.php'); ?>

@@ -1,5 +1,4 @@
 <?php
-session_start(); // Start the session
 
 require_once '../app/models/UserModel.php';
 

@@ -57,9 +57,9 @@ else $rooms = $roomPostModel->getRoomsByUserId($userId);
 
 <?php include('assets/header.php'); ?>
 <div class="container">
-    <h2 class="mt-4">Post a Room</h2>
+    <h2 class="mt-4">Post a Room</h2> <a  class="btn btn-information" href="?view"> Show my own post</a>
     <!-- Room Posting Form -->
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data" onsubmit="return validateRoomForm()">
         <div class="form-group">
             <label for="title">Post Title</label>
             <input type="text" class="form-control" id="title" name="title" required>
@@ -178,6 +178,67 @@ else $rooms = $roomPostModel->getRoomsByUserId($userId);
             <button type="submit" name="updateRoom" class="btn btn-primary">Update Room</button>
         </form>
     <?php } ?>
+   
 </div>
+<script>
+function validateRoomForm() {
+    // Get form inputs
+    var title = document.getElementById('title').value.trim();
+    var description = document.getElementById('description').value.trim();
+    var rent = document.getElementById('rent').value.trim();
+    var condition = document.getElementById('condition').value.trim();
+    var room = document.getElementById('room').value.trim();
+    var address = document.getElementById('address').value.trim();
+    var photo = document.getElementById('photo').value;
 
+    // Check if title is empty
+    if (title === "") {
+        alert("Please enter a title.");
+        return false;
+    }
+
+    // Check if description is empty
+    if (description === "") {
+        alert("Please enter a description.");
+        return false;
+    }
+    if (description.length < 10) {
+        alert('Description must be at least 10 characters long.');
+        return false;
+    }
+
+    // Check if rent is empty or not a valid number
+    if (rent === "" || isNaN(rent) || parseFloat(rent) <= 0) {
+        alert("Please enter a valid rent amount.");
+        return false;
+    }
+
+    // Check if condition is empty
+    if (condition === "") {
+        alert("Please enter the condition of the room.");
+        return false;
+    }
+
+    // Check if room is empty
+    if (room === "") {
+        alert("Please enter the number of rooms.");
+        return false;
+    }
+
+    // Check if address is empty
+    if (address === "") {
+        alert("Please enter the address.");
+        return false;
+    }
+
+    // Check if a photo is uploaded (only for the create form)
+    if (document.getElementById('photo').required && photo === "") {
+        alert("Please upload a photo of the room.");
+        return false;
+    }
+
+    // If all validations pass, return true to submit the form
+    return true;
+}
+</script>
 <?php include('assets/footer.php'); ?>
